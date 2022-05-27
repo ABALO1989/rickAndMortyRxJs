@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { catchError, EMPTY, forkJoin, map, Observable, startWith, Subject } from 'rxjs';
-import { combineLatest, combineLatestInit } from 'rxjs/internal/observable/combineLatest';
+import { catchError, EMPTY, forkJoin, map, Observable, startWith, Subject, BehaviorSubject } from 'rxjs';
+import { combineLatest} from 'rxjs/internal/observable/combineLatest';
 
 import { ProductCategory } from '../product-categories/product-category';
 import { ProductCategoryService } from '../product-categories/product-category.service';
@@ -20,16 +20,13 @@ export class ProductListComponent {
   //RA2. EXPONEMOS LOS SUBJETOS OBSERVABLES
   //RA3. COMBINAR EL FLUJO DE ACCION CON EL FLUJO DE DATOS
 
-  private categorySelectedSubject = new Subject<number>();
+  private categorySelectedSubject = new BehaviorSubject<number>(0);
   categorySelectedAction$ = this.categorySelectedSubject.asObservable();
 
   
   products$= combineLatest([
     this.productService.productsWithCategory$,
-    this.categorySelectedAction$
-    .pipe(
-      startWith(0)) //inicilizar el flujo de accion simepore es lo mas reocmendado pues se podria ver afectada la visualizacion sino se inicializa
-  ])
+    this.categorySelectedAction$])
   .pipe (
     map(([products, selectedCategoryId])=>
     products.filter(product => 
