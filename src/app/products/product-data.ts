@@ -61,6 +61,26 @@ export class ProductData {
       price: 675.00,
       categoryId: 5,
       quantityInStock: 0
+    },
+    {
+      id: 14,
+      productName: 'Prueba',
+      productCode: 'GMG-0001',
+      description: 'Doll from the 1960s',
+      price: 675.00,
+      categoryId: 5,
+      quantityInStock: 0
+    }, 
+    {
+      id: 15,
+      productName: 'Prueba2',
+      productCode: 'GMG-0001',
+      description: 'Doll from the 1960s',
+      price: 675.00,
+      categoryId: 3,
+      quantityInStock: 0
     }
+
   ];
+  
 }

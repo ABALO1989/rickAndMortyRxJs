@@ -5,6 +5,7 @@ export interface Product {
   productCode?: string;
   description?: string;
   price?: number;
+  category?: string;
   categoryId?: number;
   quantityInStock?: number;
   searchKey?: string[];
