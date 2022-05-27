@@ -22,7 +22,7 @@ export class ProductService {
 
 
 //2.1 Combinacion de dos observables: products and categories
-  productWithCategory$ = combineLatest ([
+  productsWithCategory$ = combineLatest ([
     this.products$,
     this.productCategoryService.productCategories$
   ]).pipe( 
