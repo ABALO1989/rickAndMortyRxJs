@@ -14,11 +14,13 @@ export class ProductListComponent {
   pageTitle = 'Product List';
   errorMessage = '';
 
+
+  //////////////////////////////////////////////////////////////////////////////////////
   //REACTION TO ACTIONS (RA)
   //RA1. CREAR FLUJO DE ACCION: emitira el ID de categoria seleccionada, cada vez que el usuario selecciona una
-      //private porque ningun otro codigo deberia usar este subjeto, simpre debemos ponerlo asi
-  //RA2. EXPONEMOS LOS SUBJETOS OBSERVABLES
-  //RA3. COMBINAR EL FLUJO DE ACCION CON EL FLUJO DE DATOS
+      //private porque ningun otro codigo deberia usar este subjeto, simpre debemos ponerlo asi y EXPONEMOS LOS SUBJETOS OBSERVABLES
+  //RA2.COMBINAR EL FLUJO DE ACCION CON EL FLUJO DE DATOS
+  //RA3. 
 
   private categorySelectedSubject = new BehaviorSubject<number>(0);
   categorySelectedAction$ = this.categorySelectedSubject.asObservable();
@@ -37,9 +39,6 @@ export class ProductListComponent {
     return EMPTY
   })
   )
-
-
-  
   
 // 3.2 Obervable de categorias, que recibe la informacion sel servicio productCategoty y del observable productCategories
   categories$ = this.productCategoryService.productCategories$.pipe(
