@@ -61,9 +61,29 @@ export class ProductService {
   private productSelectdSuject = new BehaviorSubject<number>(0);
   productSelectAction$ = this.productSelectdSuject.asObservable();
 
+    // para recuperar los datos de entrada emitidos por el usuario debo hacer esto, pues el observable esta definido aca y no en el componente
+
+    selectedProductChanged(selectedProductId: number): void {
+      this.productSelectdSuject.next(selectedProductId);
+    };
+  
+    // observable de accion para agrgar un nuevo producto
+    private productInsertedSuject = new Subject<Product>();
+    productInsertedAction$ = this.productInsertedSuject.asObservable();
+  
+   
+
+  productsWithAdd$ = merge(
+    this.productsWithCategory$,
+    this.productInsertedAction$
+  ).pipe(
+    scan((acc, value)=>
+    (value instanceof Array)? [...value] : [...acc, value], [] as Product[])
+  );
+
   // Observables para obetenr datos de un solo producto seleccionado del observable productWithCaetegory
   selectedProduct$ = combineLatest([
-    this.productsWithCategory$,
+    this.productsWithAdd$,
     this.productSelectAction$,
   ]).pipe(
     map(([products, selectedProductId]) =>
@@ -102,23 +122,7 @@ export class ProductService {
 
 
 
-  // para recuperar los datos de entrada emitidos por el usuario debo hacer esto, pues el observable esta definido aca y no en el componente
 
-  selectedProductChanged(selectedProductId: number): void {
-    this.productSelectdSuject.next(selectedProductId);
-  };
-
-  // observable de accion para agrgar un nuevo producto
-  private productInsertedSuject = new Subject<Product>();
-  productInsertedAction$ = this.productInsertedSuject.asObservable();
-
-  productsWithAdd$ = merge(
-    this.productsWithCategory$,
-    this.productInsertedAction$
-  ).pipe(
-    scan((acc, value)=>
-    (value instanceof Array)? [...value] : [...acc, value], [] as Product[])
-  );
 
     addProduct(newProduct?: Product) {
       newProduct = newProduct || this.fakeProduct();
