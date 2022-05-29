@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { throwError, Observable, tap, catchError } from 'rxjs';
+import { throwError, Observable, tap, catchError, shareReplay } from 'rxjs';
 import { ProductCategory } from './product-category';
 
 @Injectable({
@@ -13,7 +13,9 @@ export class ProductCategoryService {
   //3.1 llamado a API categorias
   productCategories$ = this.http.get<ProductCategory[]>(this.productCategoriesUrl)
   .pipe(
-    tap((data) => console.log(data, JSON.stringify(data))),
+    tap((data) => console.log('categories: ', JSON.stringify(data))),
+    shareReplay(1), // con esto queda almacenado la informacion de las categorias en el bufer y asi no hace tantos llamados al servidor, sino que los otrso que se sucriben ya obtienen la ifnormacion del bufer
+    //tap((data) => console.log('After shareReplay ')),esto solo para ver las veces que se reproducen las caegorias en el template
     catchError(this.handleError)
   );
 

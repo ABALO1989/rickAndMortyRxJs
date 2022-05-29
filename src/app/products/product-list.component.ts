@@ -12,7 +12,12 @@ import { ProductService } from './product.service';
 })
 export class ProductListComponent {
   pageTitle = 'Product List';
-  errorMessage = '';
+
+
+  //Observable de acción para el manejo de errores
+  private errorMessageSubject = new Subject<string>();
+  errorMessage$ = this.errorMessageSubject.asObservable();
+  
 
 
   //////////////////////////////////////////////////////////////////////////////////////
@@ -27,7 +32,7 @@ export class ProductListComponent {
 
   
   products$= combineLatest([
-    this.productService.productsWithCategory$,
+    this.productService.productsWithAdd$,
     this.categorySelectedAction$])
   .pipe (
     map(([products, selectedCategoryId])=>
@@ -35,7 +40,7 @@ export class ProductListComponent {
       selectedCategoryId ? product.categoryId === selectedCategoryId : true
   )), 
   catchError(err => {
-    this.errorMessage = err;
+    this.errorMessageSubject.next(err);
     return EMPTY
   })
   )
@@ -43,7 +48,7 @@ export class ProductListComponent {
 // 3.2 Obervable de categorias, que recibe la informacion sel servicio productCategoty y del observable productCategories
   categories$ = this.productCategoryService.productCategories$.pipe(
     catchError((err) => {
-      this.errorMessage = err;
+      this.errorMessageSubject.next(err);
       return EMPTY;
     })
   );
@@ -54,7 +59,7 @@ export class ProductListComponent {
   ) {}
 
   onAdd(): void {
-    console.log('Not yet implemented');
+    this.productService.addProduct();
   }
 
   onSelected(categoryId: string): void {
@@ -67,7 +72,7 @@ export class ProductListComponent {
   // products$ = this.productService.productWithCategory$ //importantttt aca lo asocio al nuevo observable
   //   .pipe(
   //     catchError((err) => {
-  //       this.errorMessage = err;
+  //       this.errorMessageSubject.next(err);
   //       return EMPTY;
   //     })
   //   );
