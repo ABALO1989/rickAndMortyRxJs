@@ -4,20 +4,20 @@ import { combineLatest} from 'rxjs/internal/observable/combineLatest';
 
 import { ProductCategory } from '../product-categories/product-category';
 import { ProductCategoryService } from '../product-categories/product-category.service';
-import { ProductService } from './product.service';
+import { ProductService } from './character.service';
 
 @Component({
-  templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.css'],
+  templateUrl: './character-list.component.html',
+  styleUrls: ['./character-list.component.css'],
 })
-export class ProductListComponent {
-  pageTitle = 'Product List';
+export class CharacterListComponent {
+  pageTitle = 'Charater List';
 
 
   //Observable de acción para el manejo de errores
   private errorMessageSubject = new Subject<string>();
   errorMessage$ = this.errorMessageSubject.asObservable();
-  
+
 
 
   //////////////////////////////////////////////////////////////////////////////////////
@@ -25,26 +25,26 @@ export class ProductListComponent {
   //RA1. CREAR FLUJO DE ACCION: emitira el ID de categoria seleccionada, cada vez que el usuario selecciona una
       //private porque ningun otro codigo deberia usar este subjeto, simpre debemos ponerlo asi y EXPONEMOS LOS SUBJETOS OBSERVABLES
   //RA2.COMBINAR EL FLUJO DE ACCION CON EL FLUJO DE DATOS
-  //RA3. 
+  //RA3.
 
   private categorySelectedSubject = new BehaviorSubject<number>(0);
   categorySelectedAction$ = this.categorySelectedSubject.asObservable();
 
-  
+
   products$= combineLatest([
     this.productService.productsWithAdd$,
     this.categorySelectedAction$])
   .pipe (
     map(([products, selectedCategoryId])=>
-    products.filter(product => 
+    products.filter(product =>
       selectedCategoryId ? product.categoryId === selectedCategoryId : true
-  )), 
+  )),
   catchError(err => {
     this.errorMessageSubject.next(err);
     return EMPTY
   })
   )
-  
+
 // 3.2 Obervable de categorias, que recibe la informacion sel servicio productCategoty y del observable productCategories
   categories$ = this.productCategoryService.productCategories$.pipe(
     catchError((err) => {
@@ -92,12 +92,12 @@ export class ProductListComponent {
   // );
 
   // 3.3 Inyectar los servicios a usar en el componente
-  
+
 
   //5. este metodo se ejecuta cuando selecciono una de las opciones de categories presentes en el filtro
   // quiero decir que el parametro selectedCategoryId sera igual a la Id de la categoria seleccionada
   // el + es para convertir el string en un numero
   // onSelected(categoryId: string): void {
-  //   this.seletedCategoryId = +categoryId; 
+  //   this.seletedCategoryId = +categoryId;
   // }
 }

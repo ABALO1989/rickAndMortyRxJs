@@ -20,7 +20,7 @@ import {
   throwError,
 } from 'rxjs';
 
-import { Product } from './product';
+import { Product } from './character';
 import { ProductCategoryService } from '../product-categories/product-category.service';
 import { SupplierService } from '../suppliers/supplier.service';
 import { Supplier } from '../suppliers/supplier';
@@ -66,12 +66,12 @@ export class ProductService {
     selectedProductChanged(selectedProductId: number): void {
       this.productSelectdSuject.next(selectedProductId);
     };
-  
+
     // observable de accion para agrgar un nuevo producto
     private productInsertedSuject = new Subject<Product>();
     productInsertedAction$ = this.productInsertedSuject.asObservable();
-  
-   
+
+
 
   productsWithAdd$ = merge(
     this.productsWithCategory$,
@@ -93,7 +93,7 @@ export class ProductService {
     shareReplay(1)
   );
 
-  // //Obtener proveedores de los productos. Metodo Get All. todos los proveedores a la vez 
+  // //Obtener proveedores de los productos. Metodo Get All. todos los proveedores a la vez
   //   selectedProductSupplier$= combineLatest([
   //     this.selectedProduct$,
   //     this.supplierService.suppliers$
@@ -116,7 +116,7 @@ export class ProductService {
       }else {
         return of([])
       }
-    }), 
+    }),
     tap(suppliers=>console.log('Suppliers: ', JSON.stringify(suppliers)))
   );
 

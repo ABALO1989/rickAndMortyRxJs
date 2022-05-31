@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { catchError, combineLatest, EMPTY, filter, map } from 'rxjs';
 import { Supplier } from 'src/app/suppliers/supplier';
-import { Product } from '../product';
+import { Product } from '../character';
 
-import { ProductService } from '../product.service';
+import { ProductService } from '../character.service';
 
 @Component({
-  selector: 'pm-product-detail',
-  templateUrl: './product-detail.component.html',
+  selector: 'pm-character-detail',
+  templateUrl: './character-detail.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductDetailComponent {
+export class CharacterDetailComponent {
   errorMessage = '';
 
 
@@ -20,7 +20,7 @@ export class ProductDetailComponent {
       this.errorMessage = err;
       return EMPTY;
     })
-  ); 
+  );
 
   pageTitle$ = this.product$
   .pipe(
@@ -37,7 +37,7 @@ export class ProductDetailComponent {
   )
 
   //para eviatar usar tantas observbales en nuestra plantilla del componente, se pueden unir todos los observables de un componetente en uno solo
-    //combinando todos los flujos de datos 
+    //combinando todos los flujos de datos
 
     vm$ = combineLatest([
       this.product$,
@@ -46,7 +46,7 @@ export class ProductDetailComponent {
     ]).
     pipe(
       filter(([product]) => Boolean(product)),
-    map (([product, productSuppliers, pageTitle]) => 
+    map (([product, productSuppliers, pageTitle]) =>
     ({product, productSuppliers, pageTitle}))
     );
 

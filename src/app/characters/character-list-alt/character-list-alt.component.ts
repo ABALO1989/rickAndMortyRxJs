@@ -2,21 +2,21 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { catchError, EMPTY, Subject, Subscription } from 'rxjs';
 
-import { Product } from '../product';
-import { ProductService } from '../product.service';
+import { Product } from '../character';
+import { ProductService } from '../character.service';
 
 @Component({
-  selector: 'pm-product-list',
-  templateUrl: './product-list-alt.component.html',
+  selector: 'pm-character-list',
+  templateUrl: './character-list-alt.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductListAltComponent  {
+export class CharacterListAltComponent  {
   pageTitle = 'Products';
-  
+
   //Observable de acción para el manejo de errores
   private errorMessageSubject = new Subject<string>();
   errorMessage$ = this.errorMessageSubject.asObservable();
-  
+
 
 
   //observable que emite todos los productos
@@ -31,7 +31,7 @@ export class ProductListAltComponent  {
   selectedProduct$ = this.productService.selectedProduct$;
 
 
-  
+
 
   constructor(private productService: ProductService) { }
 

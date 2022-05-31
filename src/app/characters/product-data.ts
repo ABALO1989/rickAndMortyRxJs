@@ -1,4 +1,4 @@
-import { Product } from './product';
+import { Product } from './character';
 
 export class ProductData {
 
@@ -70,7 +70,7 @@ export class ProductData {
       price: 675.00,
       categoryId: 5,
       quantityInStock: 0
-    }, 
+    },
     {
       id: 15,
       productName: 'Prueba2',
@@ -82,5 +82,5 @@ export class ProductData {
     }
 
   ];
-  
+
 }

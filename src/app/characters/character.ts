@@ -11,3 +11,5 @@ export interface Product {
   searchKey?: string[];
   supplierIds?: number[];
 }
+
+

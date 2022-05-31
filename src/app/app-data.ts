@@ -1,9 +1,9 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api';
 
-import { ProductData } from './products/product-data';
+import { ProductData } from './characters/product-data';
 import { ProductCategoryData } from './product-categories/product-category-data';
 import { SupplierData } from './suppliers/supplier-data';
-import { Product } from './products/product';
+import { Product } from './characters/character';
 import { ProductCategory } from './product-categories/product-category';
 import { Supplier } from './suppliers/supplier';
 

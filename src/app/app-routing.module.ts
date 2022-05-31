@@ -9,9 +9,9 @@ import { PageNotFoundComponent } from './page-not-found.component';
     RouterModule.forRoot([
       { path: 'welcome', component: WelcomeComponent },
       {
-        path: 'products',
+        path: 'characters',
         loadChildren: () =>
-          import('./products/product.module').then(m => m.ProductModule)
+          import('./characters/character.module').then(m => m.CharacterModule)
       },
       { path: '', redirectTo: 'welcome', pathMatch: 'full' },
       { path: '**', component: PageNotFoundComponent }
