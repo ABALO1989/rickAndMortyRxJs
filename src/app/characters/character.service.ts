@@ -20,131 +20,116 @@ import {
   throwError,
 } from 'rxjs';
 
-import { Product } from './character';
-import { ProductCategoryService } from '../product-categories/product-category.service';
+import { Character, Iapi} from './character';
+import { CharacterTypeService } from '../character-type/character-type.service';
 import { SupplierService } from '../suppliers/supplier.service';
 import { Supplier } from '../suppliers/supplier';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProductService {
-  private productsUrl = 'api/products';
+export class CharacterService {
+  private characterUrl = 'https://rickandmortyapi.com/api/character/';
   private suppliersUrl = 'api/suppliers';
 
   //1.1. LLamado a la API de products
-  products$ = this.http.get<Product[]>(this.productsUrl).pipe(
-    tap((data) => console.log('Products: ', JSON.stringify(data))),
+  characters$ = this.http.get<Iapi>(this.characterUrl).pipe(
+    map((response) => response.results),
     catchError(this.handleError)
   );
 
-
   //2.1 Combinacion de dos observables: products and categories
-  productsWithCategory$ = combineLatest([
-    this.products$,
-    this.productCategoryService.productCategories$,
+  characterWithType$ = combineLatest([
+    this.characters$,
+    this.characterTypeService.characterType$
   ]).pipe(
-    map(([products, categories]) =>
-      products.map(
-        (product) =>
-          ({
-            ...product,
-            price: product.price ? product.price * 1.5 : 0,
-            category: categories.find((c) => product.categoryId === c.id)?.name,
-            seachKey: [product.productName],
-          } as Product)
-      ),shareReplay(1)
+    map(([characters, types]) =>
+        characters.map(
+          (character) =>
+            ({
+              ...character,
+              typeLocation: types.find((c) => character.location.name === c.name)?.type,
+              seachKey: [character.name],
+            } as Character)
+        ),
+     shareReplay(1), 
+     
     )
   );
 
   // observable de accion de seleccionar un producto para mostrar detalles
-  private productSelectdSuject = new BehaviorSubject<number>(0);
-  productSelectAction$ = this.productSelectdSuject.asObservable();
+  private characterSelectdSuject = new BehaviorSubject<number>(0);
+  characterSelectAction$ = this.characterSelectdSuject.asObservable();
 
-    // para recuperar los datos de entrada emitidos por el usuario debo hacer esto, pues el observable esta definido aca y no en el componente
+  // para recuperar los datos de entrada emitidos por el usuario debo hacer esto, pues el observable esta definido aca y no en el componente
 
-    selectedProductChanged(selectedProductId: number): void {
-      this.productSelectdSuject.next(selectedProductId);
-    };
+  selectedCharacterChanged(selectedCharacterId: number): void {
+    this.characterSelectdSuject.next(selectedCharacterId);
+  }
 
-    // observable de accion para agrgar un nuevo producto
-    private productInsertedSuject = new Subject<Product>();
-    productInsertedAction$ = this.productInsertedSuject.asObservable();
+  // observable de accion para agrgar un nuevo personaje
+  private characterInsertedSuject = new Subject<Character>();
+  characterInsertedAction$ = this.characterInsertedSuject.asObservable();
 
-
-
-  productsWithAdd$ = merge(
-    this.productsWithCategory$,
-    this.productInsertedAction$
+  characterWithAdd$ = merge(
+    this.characterWithType$,
+    this.characterInsertedAction$
   ).pipe(
-    scan((acc, value)=>
-    (value instanceof Array)? [...value] : [...acc, value], [] as Product[])
+    scan(
+      (acc, value) => (value instanceof Array ? [...value] : [...acc, value]),
+      [] as Character[]
+    )
   );
 
   // Observables para obetenr datos de un solo producto seleccionado del observable productWithCaetegory
-  selectedProduct$ = combineLatest([
-    this.productsWithAdd$,
-    this.productSelectAction$,
+  selectedCharacter$ = combineLatest([
+    this.characterWithType$,
+    this.characterSelectAction$,
   ]).pipe(
-    map(([products, selectedProductId]) =>
-      products.find((product) => product.id === selectedProductId)
+    map(([characters, selectedCharacterId]) =>
+      characters.find((character) => character.id === selectedCharacterId)
     ),
-    tap((product) => console.log('selectedProduct', product)),
+    tap((character) => console.log('selectedCharacter', character)),
     shareReplay(1)
   );
 
-  // //Obtener proveedores de los productos. Metodo Get All. todos los proveedores a la vez
-  //   selectedProductSupplier$= combineLatest([
-  //     this.selectedProduct$,
-  //     this.supplierService.suppliers$
-  //   ]).
-  //   pipe(
-  //     map(([selectedProduct, suppliers]) =>
-  //     suppliers.filter(supplier => selectedProduct?.supplierIds?.includes(supplier.id))
-  //   )
-  //   )
-
 
   //Obtener proveedores por producto seleccionado. Metodo Just in Time
-  selectedProductSupplier$ = this.selectedProduct$
-  .pipe(
-    filter(product => Boolean(product)), //este filter sirve para no intentar obtener proveedores sino hay productos seleecionados
-    switchMap(selectedProduct => {
-      if (selectedProduct?.supplierIds){
-        return forkJoin(selectedProduct.supplierIds.map(supplierId =>
-          this.http.get<Supplier>(`${this.suppliersUrl}/${supplierId}`)))
-      }else {
-        return of([])
+  selectedCharacterSupplier$ = this.selectedCharacter$.pipe(
+    filter((character) => Boolean(character)), //este filter sirve para no intentar obtener proveedores sino hay productos seleecionados
+    switchMap((selectedCharacter) => {
+      if (selectedCharacter?.supplierIds) {
+        return forkJoin(
+          selectedCharacter.supplierIds.map((supplierId) =>
+            this.http.get<Supplier>(`${this.suppliersUrl}/${supplierId}`)
+          )
+        );
+      } else {
+        return of([]);
       }
     }),
-    tap(suppliers=>console.log('Suppliers: ', JSON.stringify(suppliers)))
+    tap((suppliers) => console.log('Suppliers: ', JSON.stringify(suppliers)))
   );
 
-
-
-
-
-    addProduct(newProduct?: Product) {
-      newProduct = newProduct || this.fakeProduct();
-      this.productInsertedSuject.next(newProduct)
-    };
+  addCharacter(newCharacter?: Character) {
+    newCharacter = newCharacter || this.fakeCharacter();
+    this.characterInsertedSuject.next(newCharacter);
+  }
 
   constructor(
     private http: HttpClient,
-    private productCategoryService: ProductCategoryService,
+    private characterTypeService: CharacterTypeService,
     private supplierService: SupplierService
   ) {}
 
-  private fakeProduct(): Product {
+  private fakeCharacter(): Character {
     return {
-      id: 42,
-      productName: 'Another One',
-      productCode: 'TBX-0042',
-      description: 'Our new product',
-      price: 8.9,
-      categoryId: 3,
-      category: 'Toolbox',
-      quantityInStock: 30,
+      id: 98,
+      name: 'test',
+      status: 'dead',
+      species: 'Human',
+      image:'',
+      location:{name:'', url:''}
     };
   }
 

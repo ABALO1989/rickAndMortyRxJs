@@ -1,15 +1,21 @@
-/* Defines the product entity */
-export interface Product {
+
+export interface Character{
   id: number;
-  productName: string;
-  productCode?: string;
-  description?: string;
-  price?: number;
-  category?: string;
-  categoryId?: number;
-  quantityInStock?: number;
-  searchKey?: string[];
+  name: string;
+  status: string;
+  species: string;
+  image: string;
+  location: {name: string, url: string}
+  typeLocation?: string;
   supplierIds?: number[];
+  
 }
+
+export interface Iapi{
+  info: object;
+  results: Character[];
+}
+  
+
 
 

@@ -5,45 +5,40 @@
   </div>
 
   <div class="card-body"
-    *ngIf='vm.product'>
+    *ngIf='vm.character'>
     <div class="row">
       <div class="col-md-2">Name:</div>
-      <div class="col-md-6">{{ vm.product.productName }}</div>
+      <div class="col-md-6">{{ vm.character.name }}</div>
     </div>
     <div class="row">
       <div class="col-md-2">Code:</div>
-      <div class="col-md-6">{{ vm.product.productCode }}</div>
+      <div class="col-md-6">{{ vm.character.status}}</div>
     </div>
     <div class="row">
       <div class="col-md-2">Category:</div>
-      <div class="col-md-6">{{ vm.product.categoryId }}</div>
+      <div class="col-md-6">{{ vm.character.species }}</div>
     </div>
     <div class="row">
-      <div class="col-md-2">Description:</div>
-      <div class="col-md-6">{{ vm.product.description }}</div>
-    </div>
-    <div class="row">
-      <div class="col-md-2">Price:</div>
-      <div class="col-md-6">{{ vm.product.price | currency: "USD":"symbol" }}</div>
-    </div>
-    <div class="row">
-      <div class="col-md-2">In Stock:</div>
-      <div class="col-md-6">{{ vm.product.quantityInStock }}</div>
+      <div class="col-md-2">Image:</div>
+      <div class="col-md-6">
+        <img
+              [src]='vm.character.image' 
+              [title]='vm.character.name' ></div>
     </div>
 
     <div class="table-responsive">
       <table class="table mb-0"
-             *ngIf="vm.productSuppliers; else noSuppliers">
+             *ngIf="vm.characterSuppliers; else noSuppliers">
         <thead>
           <tr>
-            <th>Supplier</th>
-            <th>Cost</th>
-            <th>Minimum Quantity</th>
+            <th>More Info</th>
+            <th>More</th>
+            <th>More Info</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let supplier of vm.productSuppliers">
-            <td>{{ supplier.name }}</td>
+          <tr *ngFor="let supplier of vm.characterSuppliers">
+            <td>{{ supplier }}</td>
             <td>{{ supplier.cost | currency: "USD":"symbol":"1.2-2" }}</td>
             <td>{{ supplier.minQuantity }}</td>
           </tr>
@@ -53,7 +48,7 @@
   </div>
   <ng-template #noSuppliers>
     <div class="alert alert-warning">
-      No suppliers for product
+      No suppliers for character
     </div>
   </ng-template>
 </div>

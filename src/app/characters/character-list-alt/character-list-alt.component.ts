@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { catchError, EMPTY, Subject, Subscription } from 'rxjs';
 
-import { Product } from '../character';
-import { ProductService } from '../character.service';
+
+import { CharacterService } from '../character.service';
 
 @Component({
   selector: 'pm-character-list',
@@ -11,7 +11,7 @@ import { ProductService } from '../character.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CharacterListAltComponent  {
-  pageTitle = 'Products';
+  pageTitle = 'Character';
 
   //Observable de acción para el manejo de errores
   private errorMessageSubject = new Subject<string>();
@@ -20,7 +20,7 @@ export class CharacterListAltComponent  {
 
 
   //observable que emite todos los productos
-  products$ = this.productService.productsWithAdd$
+  characters$ = this.characterService.characterWithType$
   .pipe(catchError(err => {
     this.errorMessageSubject.next(err);
     return EMPTY
@@ -28,17 +28,17 @@ export class CharacterListAltComponent  {
 
 
   //observable que emite el producto seleccionado
-  selectedProduct$ = this.productService.selectedProduct$;
+  selectedCharacter$ = this.characterService.selectedCharacter$;
 
 
 
 
-  constructor(private productService: ProductService) { }
+  constructor(private characterService: CharacterService) { }
 
 
 
 
-  onSelected(productId: number): void {
-   this.productService.selectedProductChanged(productId);
+  onSelected(characterId: number): void {
+   this.characterService.selectedCharacterChanged(characterId);
   }
 }

@@ -5,3 +5,15 @@ export interface Supplier {
   cost: number;
   minQuantity: number;
 }
+
+export interface Episode {
+  id: number,
+  name: string,
+  episode: string,
+
+}
+
+export interface ApiEpisode{
+  info: object;
+  results: Episode[];
+}

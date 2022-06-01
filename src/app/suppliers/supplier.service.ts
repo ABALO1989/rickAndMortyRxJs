@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { throwError, Observable, tap, shareReplay, catchError } from 'rxjs';
-import { Supplier } from './supplier';
+import { throwError, Observable, tap, shareReplay, catchError, map } from 'rxjs';
+import { ApiEpisode, Supplier } from './supplier';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SupplierService {
-  suppliersUrl = 'api/suppliers';
+  suppliersUrl = 'https://rickandmortyapi.com/api/episode';
 
-  suppliers$ = this.http.get<Supplier[]>(this.suppliersUrl)
+  suppliers$ = this.http.get<ApiEpisode>(this.suppliersUrl)
   .pipe(
-    tap(data=> console.log('Supplier :', JSON.stringify(data))),
+    map((response) => response.results),
+    catchError(this.handleError),
     shareReplay(1),
-    catchError(this.handleError)
   );
 
   constructor(private http: HttpClient) { }
